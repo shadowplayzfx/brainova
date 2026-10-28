@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brainova – AI study tutor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0b16;
+  --side:#110e1d;
+  --line:#221d33;
+  --card:#181427;
+  --card-hi:#2a2146;
+  --text:#f1eefb;
+  --muted:#a59fba;
+  --accent:#8b5cf6;
+  --accent-soft:#b794f6;
+  --accent-line:#4a3a85;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --serif:'Instrument Serif','Times New Roman',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);display:flex;min-height:100vh;overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+:focus-visible{outline:2px solid var(--accent-soft);outline-offset:2px}
+
+/* sidebar */
+.side{width:288px;flex:none;background:var(--side);border-right:1px solid var(--line);padding:26px 12px;display:flex;flex-direction:column;gap:26px}
+.brand{display:flex;align-items:center;gap:14px;padding:0 10px}
+.brand svg{width:64px;height:64px}
+.brand h1{font-size:26px;font-weight:600;letter-spacing:-.01em}
+.brand p{font-size:16px;color:#8d7bc4;margin-top:2px}
+.nav{display:flex;flex-direction:column;gap:6px}
+.nav a{display:flex;align-items:center;gap:16px;padding:14px 16px;border-radius:14px;color:#c9c4dc;text-decoration:none;font-size:17px;border:1px solid transparent;transition:background .15s}
+.nav a:hover{background:#1a1530}
+.nav a.on{background:#221a3d;border-color:var(--accent-line);color:#fff}
+.nav a.on svg{color:var(--accent-soft)}
+
+/* main */
+.main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;overflow:auto;background:radial-gradient(ellipse 60% 50% at 40% 22%,#1d1536 0%,transparent 70%),var(--bg)}
+.wrap{width:100%;max-width:760px}
+.hero svg{width:170px;height:170px;display:block;margin:0 0 -6px 20px}
+.float{animation:float 5s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-7px)}}
+h2{font-family:var(--serif);font-weight:400;font-size:clamp(40px,6vw,56px);line-height:1.1;letter-spacing:.005em;margin-left:12px}
+h2 span{color:var(--accent-soft)}
+.sub{color:var(--muted);font-size:18px;margin:14px 0 26px 12px}
+
+.box{background:linear-gradient(180deg,#171229,#130f22);border:1px solid var(--accent-line);border-radius:22px;padding:22px 22px 16px;box-shadow:0 0 40px rgba(139,92,246,.08)}
+.box textarea{width:100%;height:68px;background:none;border:0;resize:none;color:var(--text);font:inherit;font-size:18px;outline:none}
+.box textarea::placeholder{color:#8f89a6}
+.tools{display:flex;align-items:center;gap:12px}
+.tool{width:52px;height:52px;border-radius:14px;background:#201a33;border:1px solid #2c2545;display:grid;place-items:center;color:#cfc9e4}
+.tool:hover{background:#2a2342}
+.send{margin-left:auto;width:50px;height:50px;border-radius:50%;background:var(--accent);display:grid;place-items:center;color:#fff;box-shadow:0 4px 18px rgba(139,92,246,.45)}
+.send:hover{background:#9a6fff}
+.send svg{fill:#fff;stroke:none;width:22px;height:22px}
+
+.sug-h{display:flex;align-items:center;gap:12px;color:var(--accent-soft);margin:26px 0 14px;font-size:16px;font-weight:500}
+.sug-h::after{content:"";flex:1;height:1px;background:var(--line)}
+.sug{display:grid;grid-template-columns:1.35fr 1fr 1fr 1fr;gap:12px}
+.chip{display:flex;align-items:center;gap:12px;text-align:left;padding:16px;border-radius:14px;background:var(--card);border:1px solid #2a2440;font-size:15px;color:#dcd8ec;line-height:1.3;transition:background .15s}
+.chip:hover{background:#211b38}
+.chip svg{color:#b9b3d0}
+.chip.hi{background:var(--card-hi);border-color:var(--accent-line);color:#fff}
+.chip.hi svg{color:var(--accent-soft)}
+.chip .go{margin-left:auto}
+
+@media(max-width:900px){.sug{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){
+  body{flex-direction:column;overflow:auto}
+  .side{width:100%;flex-direction:row;align-items:center;padding:12px;gap:10px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
+  .brand p,.nav a span{display:none}
+  .brand svg{width:44px;height:44px}
+  .nav{flex-direction:row}
+  .nav a{padding:10px 12px}
+  .main{justify-content:flex-start}
+}
+@media(prefers-reduced-motion:reduce){.float{animation:none}}
+</style>
+</head>
+<body>
+
+<!-- mascot (reused) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="bg" cx="40%" cy="30%" r="75%">
+      <stop offset="0" stop-color="#c4a5ff"/>
+      <stop offset=".55" stop-color="#9b6df0"/>
+      <stop offset="1" stop-color="#6c3fd0"/>
+    </radialGradient>
+    <radialGradient id="orb" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#e5d4ff"/>
+      <stop offset=".5" stop-color="#a672ff"/>
+      <stop offset="1" stop-color="#a672ff" stop-opacity="0"/>
+    </radialGradient>
+    <symbol id="brain" viewBox="0 0 200 200">
+      <ellipse cx="100" cy="176" rx="46" ry="9" fill="#8b5cf6" opacity=".25"/>
+      <g stroke="#a98bf0" stroke-width="3" stroke-linecap="round" fill="none">
+        <path d="M78 48 Q72 32 66 24"/><path d="M122 48 Q128 32 134 24"/>
+      </g>
+      <circle cx="65" cy="23" r="5" fill="#c9afff"/><circle cx="135" cy="23" r="5" fill="#c9afff"/>
+      <g fill="url(#bg)">
+        <circle cx="62" cy="92" r="32"/><circle cx="140" cy="92" r="32"/>
+        <circle cx="82" cy="64" r="30"/><circle cx="122" cy="64" r="30"/>
+        <circle cx="100" cy="82" r="40"/><circle cx="76" cy="122" r="30"/>
+        <circle cx="126" cy="122" r="30"/><circle cx="100" cy="128" r="32"/>
+      </g>
+      <g fill="#fff" opacity=".18"><ellipse cx="80" cy="56" rx="22" ry="10"/></g>
+      <g fill="#2a1659">
+        <ellipse cx="82" cy="100" rx="6" ry="7.5"/><ellipse cx="118" cy="100" rx="6" ry="7.5"/>
+      </g>
+      <circle cx="84" cy="97" r="2.2" fill="#fff"/><circle cx="120" cy="97" r="2.2" fill="#fff"/>
+      <path d="M94 110 Q100 116 106 110" stroke="#2a1659" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="70" cy="112" rx="7" ry="4" fill="#ff9ad0" opacity=".35"/>
+      <ellipse cx="130" cy="112" rx="7" ry="4" fill="#ff9ad0" opacity=".35"/>
+    </symbol>
+  </defs>
+</svg>
+
+<aside class="side">
+  <div class="brand">
+    <svg viewBox="0 0 200 200"><use href="#brain"/></svg>
+    <div><h1>Brainova</h1><p>AI study tutor</p></div>
+  </div>
+  <nav class="nav">
+    <a href="#" class="on"><svg class="i" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9 12h.01M15 12h.01"/></svg><span>New chat</span></a>
+    <a href="#"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Search</span></a>
+    <a href="#"><svg class="i" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Study Sessions</span></a>
+    <a href="#"><svg class="i" viewBox="0 0 24 24"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/></svg><span>Artifacts</span></a>
+    <a href="#"><svg class="i" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg><span>Code</span></a>
+  </nav>
+</aside>
+
+<main class="main">
+  <div class="wrap">
+    <div class="hero">
+      <svg class="float" viewBox="0 0 200 200" aria-hidden="true"><use href="#brain"/></svg>
+      <h2><span id="greet" style="color:inherit">Afternoon</span>, <span>pranshu</span></h2>
+      <p class="sub">Ready to learn, focus, and make progress.</p>
+    </div>
+
+    <div class="box">
+      <textarea placeholder="Ask anything or tell me what you need help with..." aria-label="Message"></textarea>
+      <div class="tools">
+        <button class="tool" aria-label="Attach file"><svg class="i" viewBox="0 0 24 24"><path d="m21 11-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.6 8.6a2 2 0 0 1-3-3L15 7"/></svg></button>
+        <button class="tool" aria-label="Search the web"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></button>
+        <button class="send" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M21.5 3 2.8 10.4a.8.8 0 0 0 0 1.5l6.9 2.6 2.6 6.9a.8.8 0 0 0 1.5 0z"/></svg></button>
+      </div>
+    </div>
+
+    <div class="sug-h"><svg class="i" viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M10 3l1.8 5.2L17 10l-5.2 1.8L10 17l-1.8-5.2L3 10l5.2-1.8zM18 14l.9 2.6L21.5 17.5l-2.6.9L18 21l-.9-2.6-2.6-.9 2.6-.9z"/></svg>Suggestions</div>
+    <div class="sug">
+      <button class="chip hi"><svg class="i" viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="M13 7l4 4M14 20h6"/></svg>What are you working on right now?<svg class="i go" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></button>
+      <button class="chip"><svg class="i" viewBox="0 0 24 24"><path d="M2.5 5.5C5 4.5 8.5 4.5 12 7c3.5-2.5 7-2.5 9.5-1.5v13c-2.5-1-6-1-9.5 1.5-3.5-2.5-7-2.5-9.5-1.5zM12 7v13"/></svg>Explain a concept</button>
+      <button class="chip"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7M12 17h.01"/></svg>Practice quiz</button>
+      <button class="chip"><svg class="i" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M12 13v4M10 15h4"/></svg>Make a study plan</button>
+    </div>
+  </div>
+</main>
+
+<script>
+  // time-based greeting
+  var h = new Date().getHours();
+  document.getElementById('greet').textContent = h < 12 ? 'Morning' : h < 17 ? 'Afternoon' : 'Evening';
+  // chips fill the input
+  document.querySelectorAll('.chip').forEach(function (c) {
+    c.addEventListener('click', function () {
+      var t = document.querySelector('textarea');
+      t.value = c.textContent.trim();
+      t.focus();
+    });
+  });
+</script>
+</body>
+</html>
